@@ -1,0 +1,31 @@
+version: '3.2'
+networks:
+  container-net:
+services:
+  sql:
+    image: "mcr.microsoft.com/mssql/server:2017-latest"
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Pwd12345!
+      - MSSQL_PID=Express
+    hostname: db-server
+    networks:
+      container-net:
+        aliases:
+          - db-server
+    volumes:
+      - type: volume
+        source: mssql
+        target: /var/opt/mssql
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5001:80"
+    networks:
+      container-net:
+volumes:
+    mssql:
